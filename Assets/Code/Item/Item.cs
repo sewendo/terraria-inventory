@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,7 @@ public class Item : MonoBehaviour
     [SerializeField] private Rarity rarity = Rarity.White;
     [SerializeField] private Type type;
     [SerializeField] private int quantity;
-    [SerializeField] private bool stackable;
+    [SerializeField] public bool stackable;
     
     protected int id;
     [SerializeField] TextMeshProUGUI quantityText;
@@ -21,7 +22,6 @@ public class Item : MonoBehaviour
         get => id;
         set => id = value;
     }
-    private Item newItem;
     public int Quantity
     { 
         get => quantity;
@@ -37,8 +37,8 @@ public class Item : MonoBehaviour
         Quantity += item.Quantity;
         if (Quantity > maxQuantity)
             item.Quantity = Quantity - maxQuantity;
-        if (item.quantity < 1)
-            item = null;
+        else
+            Destroy(item.gameObject);
     }
 
     protected virtual void Start()
@@ -49,7 +49,9 @@ public class Item : MonoBehaviour
     private void SetupQuantityText()
     {
         if (!stackable)
+        {
             return;
+        }
         quantityText = gameObject.GetComponentInChildren<TextMeshProUGUI>();
         quantity = Random.Range(1, 1000);
         quantityText.text = quantity.ToString();
